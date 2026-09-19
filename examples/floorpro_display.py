@@ -10,8 +10,10 @@ from sciro.parameters import Port
 hub = PeakHub()
 fp = FloorPro(Port.A)
 
-# Rows 0-2: the 15 IR channels; bottom corners: EXT1 / EXT2; bottom centre: battery.
-hub.display.device(fp, brightness=50)
+# Rows 0-2: the 15 IR channels; bottom-left EXT2, bottom-right EXT1 (as on the
+# sensor). The matrix is much dimmer than the sensor's strip, so brightness
+# above 100 amplifies the picture (clipping at full).
+hub.display.device(fp, brightness=300)
 
 while True:
     cog_dark, cog_bright, brightness, darkness, mask, calibrating = fp.line.read()

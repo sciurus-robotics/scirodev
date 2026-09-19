@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scirodev"
+version = "0.1.0"
+description = "PeakHub / sciro extensions to Pybricks: typed API stubs (sciro.*) and hub tooling on top of pybricksdev"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Thomas Schank" }]
+keywords = ["pybricks", "lego", "peakhub", "micropython", "stubs"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Embedded Systems",
+    "Typing :: Typed",
+]
+dependencies = [
+    # Tooling: connecting to hubs (incl. PeakHub over BLE), running/downloading programs.
+    "pybricksdev>=2.3",
+    # The upstream API stubs we build on (pybricks.parameters, pybricks._common, ...).
+    "pybricks>=3.6",
+]
+
+[project.urls]
+Homepage = "https://github.com/sciurus-robotics/scirodev"
+Repository = "https://github.com/sciurus-robotics/scirodev"
+
+[project.scripts]
+scirodev = "scirodev.cli:main"
+
+[tool.setuptools]
+packages = ["sciro", "scirodev"]
+
+[tool.setuptools.package-data]
+sciro = ["py.typed"]

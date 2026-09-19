@@ -22,9 +22,12 @@ Then your IDE/type checker knows these, which the upstream `pybricks` stubs don'
 from sciro.parameters import Port          # Port.A .. Port.H (PeakHub has 8 ports)
 from sciro.iodevices import PUMPDevice     # generic PUMP device access
 from sciro.floorpro import FloorPro        # LP-FloorPro convenience class
+from sciro.hubs import PeakHub             # hub class incl. display.device()
 
+hub = PeakHub()
 fp = FloorPro(Port.G)
 cog_dark, cog_bright, brightness, darkness, mask, calibrating = fp.line.read()
+hub.display.device(fp, brightness=50)      # mirror the sensor's LED strip on the 5x5
 ```
 
 On the hub these modules are frozen into the PeakHub firmware:

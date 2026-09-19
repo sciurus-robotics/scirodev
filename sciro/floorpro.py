@@ -16,6 +16,7 @@ if TYPE_CHECKING:
         MaybeAwaitableInts,
         MaybeAwaitableIRCalib,
         MaybeAwaitableLine,
+        MaybeAwaitablePixels,
         MaybeAwaitableRGBC,
     )
 
@@ -75,6 +76,20 @@ class IRCalib(_Stream):
         """oneshot() -> Tuple  -- request the table once and return it."""
 
 
+class Pixels(_Stream):
+    """The sensor's own LED strip picture, rendered on the device at full scale:
+    18 ``(r, g, b)`` triplets = IR channels 0..14, EXT1, EXT2, battery. Off by
+    default. A PeakHub mirrors it on its 5x5 matrix with
+    :meth:`sciro.hubs.PeakHub.display.device`.
+    """
+
+    def read(self) -> MaybeAwaitablePixels:
+        """read() -> Tuple[Tuple[int, int, int], ...]  -- 18 RGB triplets, 0 .. 255."""
+
+    def oneshot(self) -> MaybeAwaitablePixels:
+        """oneshot() -> Tuple  -- request one frame and return it."""
+
+
 class ColorSensor(_Stream):
     """TCS3400 on an extension port: raw R, G, B, C at device resolution.
 
@@ -126,6 +141,8 @@ class FloorPro:
     line: Line
     ir_raw: IRRaw
     ir_calib: IRCalib
+    pixels: Pixels
+    """The strip picture stream; ``None`` with firmware that lacks it."""
 
     def __init__(self, port: _Port):
         """FloorPro(port)
@@ -146,3 +163,6 @@ class FloorPro:
 
     def streams(self) -> Tuple[StreamInfo, ...]:
         """streams() -> Tuple  -- the enumerated streams ``(id, url, ext_port, state_len)``."""
+
+    def _display_source(self) -> Tuple[PUMPDevice, int, Tuple[Optional[int], ...]]:
+        """(device, stream id, matrix map) consumed by ``hub.display.device()``."""

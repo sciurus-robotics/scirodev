@@ -17,6 +17,8 @@ if TYPE_CHECKING:
     _RGBC = Tuple[int, int, int, int, int]
     _Euler = Tuple[float, float, float, int]
     _StateData = Tuple[bytes, bytes]
+    _RGB = Tuple[int, int, int]
+    _Pixels = Tuple[_RGB, ...]
 
     class MaybeAwaitableLine(_Line, Awaitable[_Line]): ...
 
@@ -29,3 +31,5 @@ if TYPE_CHECKING:
     class MaybeAwaitableEuler(_Euler, Awaitable[_Euler]): ...
 
     class MaybeAwaitableStateData(_StateData, Awaitable[_StateData]): ...
+
+    class MaybeAwaitablePixels(_Pixels, Awaitable[_Pixels]): ...

@@ -30,6 +30,10 @@ cog_dark, cog_bright, brightness, darkness, mask, calibrating = fp.line.read()
 hub.display.device(fp, brightness=50)      # mirror the sensor's LED strip on the 5x5
 ```
 
+Full demo programs for the LP FloorPro (both for LEGO hubs and the PeakHub) live in
+[sciurus-robotics/FloorPro-CodeDemos](https://github.com/sciurus-robotics/FloorPro-CodeDemos);
+`examples/` here stays minimal.
+
 On the hub these modules are frozen into the PeakHub firmware:
 `sciro.parameters` and `sciro.iodevices` re-export the same runtime objects as
 their `pybricks.*` counterparts, so `sciro.parameters.Port is

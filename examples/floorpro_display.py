@@ -3,7 +3,7 @@ Run: scirodev run ble examples/floorpro_display.py"""
 
 from pybricks.tools import wait
 
-from sciro.floorpro import FloorPro
+from sciro.pump import FloorPro
 from sciro.hubs import PeakHub
 from sciro.parameters import Port
 

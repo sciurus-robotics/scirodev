@@ -38,7 +38,7 @@ class LightMatrix(_common.LightMatrix):
         the program ends.
 
         Arguments:
-            device (FloorPro): The device to mirror.
+            device (FloorPro): The device to mirror (any ``sciro.pump`` device with a display stream).
             brightness (Number, %): Brightness of the mirrored pixels, 0 .. 1000.
                 Above 100 the picture is amplified (clipping at full), since
                 the matrix is far dimmer than a sensor's own LED strip.

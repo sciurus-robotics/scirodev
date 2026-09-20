@@ -21,7 +21,7 @@ class PUMPDevice:
     """Generic access to a PUMP device (Power UART Multiplex Protocol) on a
     PeakHub port. Streams are addressed by id (1..N); state and data are raw
     ``bytes`` decoded by the user or a convenience class such as
-    :class:`sciro.floorpro.FloorPro`. Spec: ``PUMP-Protocol.md``.
+    :class:`sciro.pump.FloorPro`. Spec: ``PUMP-Protocol.md``.
     """
 
     OFF: int = 0

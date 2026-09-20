@@ -2,7 +2,7 @@
 
 from pybricks.tools import wait
 
-from sciro.floorpro import FloorPro
+from sciro.pump import FloorPro
 from sciro.parameters import Port
 
 fp = FloorPro(Port.A)

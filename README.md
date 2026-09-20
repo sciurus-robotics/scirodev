@@ -21,7 +21,7 @@ Then your IDE/type checker knows these, which the upstream `pybricks` stubs don'
 ```python
 from sciro.parameters import Port          # Port.A .. Port.H (PeakHub has 8 ports)
 from sciro.iodevices import PUMPDevice     # generic PUMP device access
-from sciro.floorpro import FloorPro        # LP-FloorPro convenience class
+from sciro.pump import FloorPro        # PUMP devices (LP-FloorPro, ...)
 from sciro.hubs import PeakHub             # hub class incl. display.device()
 
 hub = PeakHub()

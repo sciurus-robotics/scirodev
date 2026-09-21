@@ -28,3 +28,14 @@ class Port(_PybricksEnum):
     F: Port = ord("F")
     G: Port = ord("G")
     H: Port = ord("H")
+
+
+class ExtPort:
+    """Extension port of a PUMP device (1-based, as in its stream table)."""
+
+    EXT1: int = 1
+    EXT2: int = 2
+    EXT3: int = 3
+    EXT4: int = 4
+    EXT5: int = 5
+    EXT6: int = 6

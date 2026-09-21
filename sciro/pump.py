@@ -8,10 +8,10 @@ value directly, or an awaitable under multitasking.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Tuple
+from typing import TYPE_CHECKING, Iterable, Optional, Tuple, Union
 
 if TYPE_CHECKING:
-    from pybricks._common import MaybeAwaitable, MaybeAwaitableFloat
+    from pybricks._common import MaybeAwaitable, MaybeAwaitableColor, MaybeAwaitableFloat
 
     from ._common import (
         MaybeAwaitableEuler,
@@ -24,6 +24,8 @@ if TYPE_CHECKING:
 
 from .iodevices import PUMPDevice as PUMPDevice  # noqa: F401  (re-export)
 from .iodevices import StreamInfo
+from pybricks.parameters import Color
+
 from .parameters import Port as _Port
 
 
@@ -94,15 +96,49 @@ class Pixels(_Stream):
 
 
 class ColorSensor(_Stream):
-    """TCS3400 on an extension port: raw R, G, B, C at device resolution.
+    """TCS3400 colour sensor on an extension port of a PUMP device.
+
+    ``ColorSensor(port, ext_port)`` opens it directly; :meth:`FloorPro.color_sensor`
+    returns the same class. ``hsv()`` and ``color()`` follow
+    ``pybricks.pupdevices.ColorSensor``.
 
     Every sample is tagged with the settings it was measured under, so a read
     after a settings change waits for the first sample taken with the new
     settings.
     """
 
+    ext_port: int
+
+    def __init__(self, port: Union[_Port, PUMPDevice], ext_port: int = 1):
+        """ColorSensor(port, ext_port=ExtPort.EXT1)
+
+        Arguments:
+            port (Port): Hub port of the PUMP device carrying the sensor (or the
+                opened ``PUMPDevice`` itself).
+            ext_port (ExtPort): Extension port the sensor is plugged into.
+                Raises ``OSError`` if there is no colour sensor there.
+        """
+
     def read(self) -> MaybeAwaitableRGBC:
-        """read() -> Tuple[int, int, int, int, int]  -- (red, green, blue, clear, status)."""
+        """read() -> Tuple[int, int, int, int, int]  -- raw (red, green, blue, clear, status) at device resolution."""
+
+    def hsv(self) -> MaybeAwaitableColor:
+        """hsv() -> Color
+
+        Hue (0 .. 359), saturation (0 .. 100) and value (0 .. 100) of the
+        surface, as a ``Color``. Standard HSV of the raw reading; value is
+        relative to the full scale of the current integration time.
+        """
+
+    def color(self) -> MaybeAwaitableColor:
+        """color() -> Color
+
+        The nearest of the detectable colours (default: red, yellow, green,
+        blue, white, none), matched like ``pybricks.pupdevices.ColorSensor``.
+        """
+
+    def detectable_colors(self, colors: Optional[Iterable[Color]] = None) -> Optional[Tuple[Color, ...]]:
+        """detectable_colors(colors)  -- set the colours color() chooses from; with no argument, get them."""
 
     def settings(self) -> Tuple[int, int, int]:
         """settings() -> Tuple[int, int, int]  -- (led_percent, gain_x, atime) in effect."""
@@ -118,11 +154,24 @@ class ColorSensor(_Stream):
 
 
 class IMU(_Stream):
-    """BNO086 on an extension port: roll, pitch, yaw in degrees.
+    """BNO086 IMU on an extension port of a PUMP device: roll, pitch, yaw in degrees.
 
-    The heading offset lives on the hub: :meth:`reset_heading` makes the current
-    yaw read as the given angle.
+    ``IMU(port, ext_port)`` opens it directly; :meth:`FloorPro.imu` returns the
+    same class. The heading offset lives on the hub: :meth:`reset_heading` makes
+    the current yaw read as the given angle.
     """
+
+    ext_port: int
+
+    def __init__(self, port: Union[_Port, PUMPDevice], ext_port: int = 2):
+        """IMU(port, ext_port=ExtPort.EXT2)
+
+        Arguments:
+            port (Port): Hub port of the PUMP device carrying the IMU (or the
+                opened ``PUMPDevice`` itself).
+            ext_port (ExtPort): Extension port the IMU is plugged into. Raises
+                ``OSError`` if there is no IMU there.
+        """
 
     def read(self) -> MaybeAwaitableEuler:
         """read() -> Tuple  -- (roll, pitch, yaw, status), degrees; yaw includes the offset."""

@@ -84,5 +84,6 @@ class PUMPDevice:
         """subscribe(stream, mode, rate=0)
 
         Changes only the stream-control word (keeps the device-specific state
-        bytes). ``rate`` is in units of 10 Hz, 0 = every sample.
+        bytes). ``rate`` is in Hz (1 .. 255; higher values are clamped to 255),
+        0 = every sample.
         """

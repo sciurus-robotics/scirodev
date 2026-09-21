@@ -32,7 +32,7 @@ class _Stream:
     id: int
 
     def subscribe(self, mode: int, rate: int = 0) -> MaybeAwaitable:
-        """subscribe(mode, rate=0)  -- see :meth:`PUMPDevice.subscribe`."""
+        """subscribe(mode, rate=0)  -- rate in Hz, 0 = every sample; see :meth:`PUMPDevice.subscribe`."""
 
     def state(self) -> Optional[bytes]:
         """state() -> bytes | None  -- the stream's current state prefix."""

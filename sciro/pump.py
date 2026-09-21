@@ -153,24 +153,24 @@ class ColorSensor(_Stream):
         """set_integration(atime)  -- TCS3400 ATIME register 0 .. 255: (256 - atime) * 2.78 ms."""
 
 
-class IMU(_Stream):
-    """BNO086 IMU on an extension port of a PUMP device: roll, pitch, yaw in degrees.
+class Gyro(_Stream):
+    """Gyro (BNO086) on an extension port of a PUMP device: roll, pitch, yaw in degrees.
 
-    ``IMU(port, ext_port)`` opens it directly; :meth:`FloorPro.imu` returns the
-    same class. The heading offset lives on the hub: :meth:`reset_heading` makes
-    the current yaw read as the given angle.
+    ``Gyro(port, ext_port)`` opens it directly; :meth:`FloorPro.gyro` returns the
+    same class (``IMU`` is an alias). The heading offset lives on the hub:
+    :meth:`reset_heading` makes the current yaw read as the given angle.
     """
 
     ext_port: int
 
     def __init__(self, port: Union[_Port, PUMPDevice], ext_port: int = 2):
-        """IMU(port, ext_port=ExtPort.EXT2)
+        """Gyro(port, ext_port=ExtPort.EXT2)
 
         Arguments:
-            port (Port): Hub port of the PUMP device carrying the IMU (or the
+            port (Port): Hub port of the PUMP device carrying the gyro (or the
                 opened ``PUMPDevice`` itself).
-            ext_port (ExtPort): Extension port the IMU is plugged into. Raises
-                ``OSError`` if there is no IMU there.
+            ext_port (ExtPort): Extension port the gyro is plugged into. Raises
+                ``OSError`` if there is no gyro there.
         """
 
     def read(self) -> MaybeAwaitableEuler:
@@ -181,6 +181,10 @@ class IMU(_Stream):
 
     def reset_heading(self, angle: float = 0) -> MaybeAwaitable:
         """reset_heading(angle=0)  -- make the current heading read as ``angle``."""
+
+
+IMU = Gyro
+"""Alias of :class:`Gyro`."""
 
 
 class FloorPro:
@@ -210,8 +214,11 @@ class FloorPro:
         The TCS3400 on extension port 1 or 2; raises ``OSError`` if none.
         """
 
-    def imu(self, ext_port: int = 2) -> IMU:
-        """imu(ext_port=2) -> IMU  -- the BNO086 on extension port 1 or 2; raises ``OSError`` if none."""
+    def gyro(self, ext_port: int = 2) -> Gyro:
+        """gyro(ext_port=2) -> Gyro  -- the gyro on extension port 1 or 2; raises ``OSError`` if none."""
+
+    def imu(self, ext_port: int = 2) -> Gyro:
+        """imu(ext_port=2) -> Gyro  -- alias of :meth:`gyro`."""
 
     def streams(self) -> Tuple[StreamInfo, ...]:
         """streams() -> Tuple  -- the enumerated streams ``(id, url, ext_port, state_len)``."""

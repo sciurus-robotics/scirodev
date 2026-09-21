@@ -4,6 +4,7 @@ class lives now). Kept so older programs keep type-checking.
 
 from .pump import (  # noqa: F401  (re-exports)
     IMU as IMU,
+    Gyro as Gyro,
     ColorSensor as ColorSensor,
     FloorPro as FloorPro,
     IRCalib as IRCalib,

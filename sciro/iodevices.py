@@ -49,6 +49,15 @@ class PUMPDevice:
             ``{"url": str, "serial": str, "streams": ((id, url, ext_port, state_len), ...)}``
         """
 
+    def stats(self) -> Dict[str, Union[int, Tuple[Tuple[int, int, int], ...]]]:
+        """stats() -> Dict
+
+        Link counters since the session started, for load tests and diagnostics:
+        ``{"frames": good frames received, "crc_errors", "cobs_errors",
+        "short_frames", "overflows", "streams": ((id, frames, gaps), ...)}``
+        where ``gaps`` counts frames of that stream the hub never received.
+        """
+
     def state(self, stream: int) -> Optional[bytes]:
         """state(stream) -> bytes | None
 

@@ -45,6 +45,34 @@ class LightMatrix(_common.LightMatrix):
         """
 
 
+class System(_common.System):
+    """The PeakHub's system object: everything ``pybricks`` offers, plus the
+    board identity.
+    """
+
+    def device_id(self) -> str:
+        """device_id() -> str
+
+        The full factory unique ID of the hub's MCU as a 24-character uppercase
+        hex string. Stable per physical hub.
+        """
+
+    def short_id(self) -> str:
+        """short_id() -> str
+
+        The hub's 8-character short ID (Crockford base32, derived from the
+        device ID): the same value the boot console prints and the device
+        inventory uses.
+        """
+
+    def info(self) -> dict:
+        """info() -> dict
+
+        ``{"name", "device_id", "short_id", "reset_reason", "program_id",
+        "program_start_type"}`` in one call.
+        """
+
+
 class PeakHub:
     """LEGO-compatible hub by Sciurus Robotics: 8 ports, 5x5 RGB matrix, IMU."""
 
@@ -56,7 +84,7 @@ class PeakHub:
     display = LightMatrix(5, 5)
     imu = _common.IMU()
     speaker = _common.Speaker()
-    system = _common.System()
+    system = System()
     ble = _common.BLE()
 
     def __init__(

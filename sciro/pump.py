@@ -19,6 +19,9 @@ if TYPE_CHECKING:
         MaybeAwaitableIRCalib,
         MaybeAwaitableLine,
         MaybeAwaitablePixels,
+        MaybeAwaitableRGB8,
+        MaybeAwaitableCalibration,
+        MaybeAwaitableStr,
         MaybeAwaitableRGBC,
     )
 
@@ -122,12 +125,48 @@ class ColorSensor(_Stream):
     def read(self) -> MaybeAwaitableRGBC:
         """read() -> Tuple[int, int, int, int, int]  -- raw (red, green, blue, clear, status) at device resolution."""
 
+    def calibrated(self) -> MaybeAwaitableRGB8:
+        """calibrated() -> Tuple[int, int, int]
+
+        Red, green, blue 0 .. 255 as the device itself shows them: stretched
+        over the calibrated range when a valid calibration applies, scaled to
+        full scale otherwise.
+        """
+
     def hsv(self) -> MaybeAwaitableColor:
         """hsv() -> Color
 
         Hue (0 .. 359), saturation (0 .. 100) and value (0 .. 100) of the
-        surface, as a ``Color``. Standard HSV of the raw reading; value is
-        relative to the full scale of the current integration time.
+        surface, as a ``Color``: standard HSV of the calibrated colour when a
+        valid calibration applies, of the raw reading otherwise.
+        """
+
+    def calibration_status(self) -> MaybeAwaitableStr:
+        """calibration_status() -> str
+
+        ``"none"`` (nothing stored), ``"weak"`` (stored but not applicable:
+        incomplete, or LED / gain / integration differ from the calibration
+        profile), ``"ok"`` (applied), or ``"calibrating"``.
+        """
+
+    def calibrate(self, enable: bool = True) -> MaybeAwaitable:
+        """calibrate(enable=True)
+
+        Start or stop the range calibration on the device. While it runs, move
+        the sensor over the darkest and brightest surfaces (or elements) it
+        will see; stopping stores the table on the sensor, bound to the LED,
+        gain and integration time in force. Changing those meanwhile aborts it.
+        """
+
+    def clear_calibration(self) -> MaybeAwaitable:
+        """clear_calibration()  -- drop the stored calibration (back to full-scale colour)."""
+
+    def calibration(self) -> MaybeAwaitableCalibration:
+        """calibration() -> Tuple
+
+        The stored table: ``(min, max, (led, gain, atime), valid, applicable,
+        visited_mask)`` with ``min``/``max`` tuples of four counts (red, green,
+        blue, clear). Fetched from the device on demand.
         """
 
     def color(self) -> MaybeAwaitableColor:

@@ -120,7 +120,7 @@ class Pixels(_Stream):
 
 
 class ColorSensor(_Stream):
-    """TCS3400 colour sensor on an extension port of a PUMP device.
+    """TCS3400 color sensor on an extension port of a PUMP device.
 
     ``ColorSensor(port, ext_port)`` opens it directly; :meth:`FloorPro.color_sensor`
     returns the same class. ``hsv()`` and ``color()`` follow
@@ -140,7 +140,7 @@ class ColorSensor(_Stream):
             port (Port): Hub port of the PUMP device carrying the sensor (or the
                 opened ``PUMPDevice`` itself).
             ext_port (ExtPort): Extension port the sensor is plugged into.
-                Raises ``OSError`` if there is no colour sensor there.
+                Raises ``OSError`` if there is no color sensor there.
         """
 
     def read(self) -> MaybeAwaitableRGBC:
@@ -158,7 +158,7 @@ class ColorSensor(_Stream):
         """hsv() -> Color
 
         Hue (0 .. 359), saturation (0 .. 100) and value (0 .. 100) of the
-        surface, as a ``Color``: standard HSV of the calibrated colour when a
+        surface, as a ``Color``: standard HSV of the calibrated color when a
         valid calibration applies, of the raw reading otherwise.
         """
 
@@ -180,7 +180,7 @@ class ColorSensor(_Stream):
         """
 
     def clear_calibration(self) -> MaybeAwaitable:
-        """clear_calibration()  -- drop the stored calibration (back to full-scale colour)."""
+        """clear_calibration()  -- drop the stored calibration (back to full-scale color)."""
 
     def calibration(self) -> MaybeAwaitableCalibration:
         """calibration() -> Tuple
@@ -193,12 +193,12 @@ class ColorSensor(_Stream):
     def color(self) -> MaybeAwaitableColor:
         """color() -> Color
 
-        The nearest of the detectable colours (default: red, yellow, green,
+        The nearest of the detectable colors (default: red, yellow, green,
         blue, white, none), matched like ``pybricks.pupdevices.ColorSensor``.
         """
 
     def detectable_colors(self, colors: Optional[Iterable[Color]] = None) -> Optional[Tuple[Color, ...]]:
-        """detectable_colors(colors)  -- set the colours color() chooses from; with no argument, get them."""
+        """detectable_colors(colors)  -- set the colors color() chooses from; with no argument, get them."""
 
     def settings(self) -> Tuple[int, int, int]:
         """settings() -> Tuple[int, int, int]  -- (led_percent, gain_x, atime) in effect."""

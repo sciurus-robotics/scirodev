@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     _RGB = Tuple[int, int, int]
     _Calibration = Tuple[Tuple[int, int, int, int], Tuple[int, int, int, int], Tuple[int, int, int], bool, bool, int]
     _Pixels = Tuple[_RGB, ...]
+    _Bools = Tuple[bool, ...]
 
     class MaybeAwaitableLine(_Line, Awaitable[_Line]): ...
 
@@ -40,3 +41,5 @@ if TYPE_CHECKING:
     class MaybeAwaitableCalibration(_Calibration, Awaitable[_Calibration]): ...
 
     class MaybeAwaitableStr(str, Awaitable[str]): ...
+
+    class MaybeAwaitableBools(_Bools, Awaitable[_Bools]): ...

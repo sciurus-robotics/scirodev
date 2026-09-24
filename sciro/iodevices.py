@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
     from ._common import MaybeAwaitableStateData
 
-from .parameters import Port as _Port
+from pybricks.parameters import Port as _Port  # base type: sciro.parameters.Port is a subclass
 
 # (stream id, url, ext_port, state length)
 StreamInfo = Tuple[int, str, int, int]

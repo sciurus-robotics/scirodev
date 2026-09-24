@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Iterable, Optional, Tuple, Union
 
 if TYPE_CHECKING:
-    from pybricks._common import MaybeAwaitable, MaybeAwaitableColor, MaybeAwaitableFloat
+    from pybricks._common import MaybeAwaitable, MaybeAwaitableBool, MaybeAwaitableColor, MaybeAwaitableFloat
 
     from ._common import (
         MaybeAwaitableEuler,
@@ -22,6 +22,7 @@ if TYPE_CHECKING:
         MaybeAwaitableRGB8,
         MaybeAwaitableCalibration,
         MaybeAwaitableStr,
+        MaybeAwaitableBools,
         MaybeAwaitableRGBC,
     )
 
@@ -29,7 +30,7 @@ from .iodevices import PUMPDevice as PUMPDevice  # noqa: F401  (re-export)
 from .iodevices import StreamInfo
 from pybricks.parameters import Color
 
-from .parameters import Port as _Port
+from pybricks.parameters import Port as _Port  # base type: sciro.parameters.Port is a subclass
 
 
 class _Stream:
@@ -55,6 +56,26 @@ class Line(_Stream):
         15-bit bright-pixel mask (bit i = sensor i), and whether calibration is
         active.
         """
+
+    def dark_centroid(self) -> MaybeAwaitableFloat:
+        """dark_centroid() -> float  -- centre of gravity of the dark pixels, in
+        sensor pitches from the middle sensor (-7 .. +7)."""
+
+    def bright_centroid(self) -> MaybeAwaitableFloat:
+        """bright_centroid() -> float  -- centre of gravity of the bright pixels (-7 .. +7)."""
+
+    def brightness(self) -> MaybeAwaitableFloat:
+        """brightness() -> float  -- overall brightness 0 .. 1."""
+
+    def darkness(self) -> MaybeAwaitableFloat:
+        """darkness() -> float  -- overall darkness 0 .. 1."""
+
+    def line_sensors_binary(self) -> MaybeAwaitableBools:
+        """line_sensors_binary() -> Tuple[bool, ...]  -- 15 flags, sensor 0 first,
+        True where the sensor sees bright."""
+
+    def calibrating(self) -> MaybeAwaitableBool:
+        """calibrating() -> bool  -- True while the min-max calibration runs."""
 
     def calibrate(self, enable: bool = True) -> MaybeAwaitable:
         """calibrate(enable=True)  -- start/stop min-max calibration of the array."""
@@ -258,6 +279,30 @@ class FloorPro:
 
     def imu(self, ext_port: int = 2) -> Gyro:
         """imu(ext_port=2) -> Gyro  -- alias of :meth:`gyro`."""
+
+    # Line conveniences at device level (the names of the LUMP driver class):
+
+    def all_sensor_data(self) -> MaybeAwaitableLine:
+        """all_sensor_data() -> Tuple  -- the same as ``line.read()``."""
+
+    def dark_centroid(self) -> MaybeAwaitableFloat:
+        """dark_centroid() -> float  -- see :meth:`Line.dark_centroid`."""
+
+    def bright_centroid(self) -> MaybeAwaitableFloat:
+        """bright_centroid() -> float  -- see :meth:`Line.bright_centroid`."""
+
+    def brightness(self) -> MaybeAwaitableFloat:
+        """brightness() -> float  -- overall brightness 0 .. 1."""
+
+    def darkness(self) -> MaybeAwaitableFloat:
+        """darkness() -> float  -- overall darkness 0 .. 1."""
+
+    def line_sensors_binary(self) -> MaybeAwaitableBools:
+        """line_sensors_binary() -> Tuple[bool, ...]  -- 15 flags, True = bright."""
+
+    def line_sensors_analog(self) -> MaybeAwaitableInts:
+        """line_sensors_analog() -> Tuple[int, ...]  -- 15 raw ADC counts
+        (0 .. 4095), sensor 0 first; one ``ir_raw`` frame on demand."""
 
     def streams(self) -> Tuple[StreamInfo, ...]:
         """streams() -> Tuple  -- the enumerated streams ``(id, url, ext_port, state_len)``."""

@@ -14,20 +14,21 @@ from pybricks.parameters import (  # noqa: F401  (re-exports)
     Side as Side,
     Stop as Stop,
 )
-from pybricks.parameters import _PybricksEnum
+from pybricks.parameters import Port as _Port
 
 
-class Port(_PybricksEnum):
-    """Port on the PeakHub. Eight LPF2/PUP ports, A .. H."""
+class Port(_Port):
+    """Port on the PeakHub. Eight LPF2/PUP ports, A .. H.
 
-    A: Port = ord("A")
-    B: Port = ord("B")
-    C: Port = ord("C")
-    D: Port = ord("D")
-    E: Port = ord("E")
-    F: Port = ord("F")
-    G: Port = ord("G")
-    H: Port = ord("H")
+    A subclass of ``pybricks.parameters.Port`` in the stub only (the same
+    object on the hub), so a ``sciro`` port is accepted wherever the upstream
+    stubs expect a ``pybricks.parameters.Port`` (``Motor``, ``DriveBase``, ...).
+    """
+
+    # A .. F are inherited; the two extra PeakHub ports (stub declarations,
+    # the firmware provides the values).
+    G: Port
+    H: Port
 
 
 class ExtPort:

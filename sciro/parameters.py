@@ -14,21 +14,41 @@ from pybricks.parameters import (  # noqa: F401  (re-exports)
     Side as Side,
     Stop as Stop,
 )
-from pybricks.parameters import Port as _Port
+from typing import TYPE_CHECKING
 
+from pybricks.parameters import _PybricksEnum
 
-class Port(_Port):
-    """Port on the PeakHub. Eight LPF2/PUP ports, A .. H.
+if TYPE_CHECKING:
+    from pybricks.parameters import Port as _Port
 
-    A subclass of ``pybricks.parameters.Port`` in the stub only (the same
-    object on the hub), so a ``sciro`` port is accepted wherever the upstream
-    stubs expect a ``pybricks.parameters.Port`` (``Motor``, ``DriveBase``, ...).
-    """
+    class Port(_Port):
+        """Port on the PeakHub. Eight LPF2/PUP ports, A .. H.
 
-    # A .. F are inherited; the two extra PeakHub ports (stub declarations,
-    # the firmware provides the values).
-    G: Port
-    H: Port
+        For the type checker this is a subclass of ``pybricks.parameters.Port``
+        (on the hub it is the same object), so a ``sciro`` port is accepted
+        wherever the upstream stubs expect a ``pybricks.parameters.Port``
+        (``Motor``, ``DriveBase``, ...). A .. F are inherited; G and H are
+        the two extra PeakHub ports.
+        """
+
+        G: Port
+        H: Port
+
+else:
+    # At runtime the upstream Port is a real Enum, which cannot be subclassed
+    # once it has members; tooling that imports the stubs (docs, tests) gets
+    # an equivalent enum with all eight ports instead.
+    class Port(_PybricksEnum):
+        """Port on the PeakHub. Eight LPF2/PUP ports, A .. H."""
+
+        A = ord("A")
+        B = ord("B")
+        C = ord("C")
+        D = ord("D")
+        E = ord("E")
+        F = ord("F")
+        G = ord("G")
+        H = ord("H")
 
 
 class ExtPort:

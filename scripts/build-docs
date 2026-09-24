@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Build the sciro API reference (Sphinx) into docs/_build/html.
+# Needs: pip install sphinx furo   (plus this package: pip install -e .)
+set -euo pipefail
+cd "$(dirname "$0")/.."
+python -m sphinx -b html -W --keep-going docs docs/_build/html "$@"
+echo "docs -> $(pwd)/docs/_build/html"

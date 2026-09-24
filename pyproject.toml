@@ -24,6 +24,9 @@ dependencies = [
     "pybricks>=3.6",
 ]
 
+[project.optional-dependencies]
+docs = ["sphinx>=8", "furo"]
+
 [project.urls]
 Homepage = "https://github.com/sciurus-robotics/scirodev"
 Repository = "https://github.com/sciurus-robotics/scirodev"

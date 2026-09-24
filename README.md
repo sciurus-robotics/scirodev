@@ -69,6 +69,18 @@ pybricks.parameters.Port` — the stubs only add what the IDE is missing. The
 stub files here mirror the frozen modules; a release of this package matches
 the PeakHub firmware of the same date.
 
+## API reference (HTML)
+
+The stubs double as the source of the API reference, built with Sphinx the way
+docs.pybricks.com is (cross-links into it for the upstream types):
+
+```
+pip install -e ".[docs]"
+scripts/build-docs            # -> docs/_build/html/index.html
+```
+
+The build output is static HTML; a website can copy that folder as is.
+
 ## Releasing
 
 Bump `version` in `pyproject.toml`, commit, tag `vX.Y.Z` and push the tag. The

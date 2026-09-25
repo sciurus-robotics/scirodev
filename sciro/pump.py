@@ -51,18 +51,18 @@ class Line(_Stream):
         """read() -> Tuple
 
         Returns ``(cog_dark, cog_bright, brightness, darkness, mask, calibrating)``:
-        centre of gravity of the dark / bright pixels in sensor pitches from the
+        center of gravity of the dark / bright pixels in sensor pitches from the
         middle sensor (-7 .. +7), overall brightness / darkness (0 .. 1), a
         15-bit bright-pixel mask (bit i = sensor i), and whether calibration is
         active.
         """
 
     def dark_centroid(self) -> MaybeAwaitableFloat:
-        """dark_centroid() -> float  -- centre of gravity of the dark pixels, in
+        """dark_centroid() -> float  -- center of gravity of the dark pixels, in
         sensor pitches from the middle sensor (-7 .. +7)."""
 
     def bright_centroid(self) -> MaybeAwaitableFloat:
-        """bright_centroid() -> float  -- centre of gravity of the bright pixels (-7 .. +7)."""
+        """bright_centroid() -> float  -- center of gravity of the bright pixels (-7 .. +7)."""
 
     def brightness(self) -> MaybeAwaitableFloat:
         """brightness() -> float  -- overall brightness 0 .. 1."""

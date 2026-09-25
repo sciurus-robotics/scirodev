@@ -6,6 +6,9 @@ from __future__ import annotations
 
 from typing import Optional, Tuple
 
+from pybricks.parameters import Number, Stop
+from pybricks._common import MaybeAwaitable
+
 from pybricks import _common
 from pybricks.robotics import DriveBase as _DriveBase
 from pybricks.tools import StopWatch
@@ -20,11 +23,46 @@ class Control(_common.Control):
 
 
 class DriveBase(_DriveBase):
-    """``pybricks.robotics.DriveBase`` (the same class on the hub); the stub
-    adds the ``log`` on ``heading_control`` / ``distance_control``."""
+    """``pybricks.robotics.DriveBase`` (the same class on the hub). The stub
+    adds the ``log`` on ``heading_control`` / ``distance_control`` and the
+    PeakHub extensions of :meth:`straight`."""
 
     heading_control: Control  # type: ignore[assignment]
     distance_control: Control  # type: ignore[assignment]
+
+    def straight(  # type: ignore[override]
+        self,
+        distance: Number,
+        then: Stop = Stop.HOLD,
+        wait: bool = True,
+        speed: Optional[Number] = None,
+        heading: Optional[Number] = None,
+        exit_speed: Number = 0,
+    ) -> MaybeAwaitable:
+        """straight(distance, then=Stop.HOLD, wait=True, speed=None, heading=None, exit_speed=0)
+
+        Drives straight for ``distance`` mm, as in Pybricks, with three
+        PeakHub extensions (keyword use recommended):
+
+        ``speed``: drive speed in mm/s for this move only; ``None`` uses the
+        ``straight_speed`` setting.
+
+        ``heading``: absolute heading in degrees to hold during the move
+        instead of the heading at its start (the gyro heading with
+        ``use_gyro(True)``, else the wheel-based one since the last
+        ``reset()``). Any value is accepted: the nearest whole-turn
+        equivalent of the current heading is targeted, so ``heading=90``
+        while the internal heading reads 450 corrects by 0 degrees, never by
+        a full turn. ``None`` keeps the Pybricks behavior.
+
+        ``exit_speed``: speed in mm/s the robot has when it reaches the
+        target; it keeps driving at that speed until the next command, so the
+        next ``straight()`` (or ``drive()``) blends in without a stop. Implies
+        ``then=Stop.NONE``; any other explicit ``then`` raises ``ValueError``.
+        Clamped to the move's drive speed. ``0`` (default) stops or holds as
+        ``then`` says. ``then=Stop.NONE`` without ``exit_speed`` keeps the
+        upstream meaning: continue at the drive speed.
+        """
 
 
 class PIDController:

@@ -21,7 +21,7 @@ dependencies = [
     # Tooling: connecting to hubs (incl. PeakHub over BLE), running/downloading programs.
     "pybricksdev>=2.3",
     # The upstream API stubs we build on (pybricks.parameters, pybricks._common, ...).
-    "pybricks>=3.6",
+    "pybricks>=4",
 ]
 
 [project.optional-dependencies]

@@ -73,6 +73,21 @@ class DriveBase(_DriveBase):
         upstream meaning: continue at the drive speed.
         """
 
+    def curve(
+        self,
+        radius: Number,
+        angle: Number,
+        then: Stop = Stop.HOLD,
+        wait: bool = True,
+    ) -> MaybeAwaitable:
+        """curve(radius, angle, then=Stop.HOLD, wait=True)
+
+        Drives an arc of ``angle`` degrees along a circle of ``radius`` mm.
+        The firmware still has this method, but the ``pybricks`` stubs dropped
+        it in favor of :meth:`arc`, so it is declared here to keep it usable
+        without a type error. Prefer ``arc()`` in new code.
+        """
+
     def heading_target(self, angle: Optional[Number] = None) -> Optional[float]:
         """heading_target(angle) / heading_target() -> float
 

@@ -45,6 +45,15 @@ class LightMatrix(_common.LightMatrix):
         """
 
 
+    def on(self, brightness: int = 100) -> None:
+        """on(brightness=100)
+
+        Turns all pixels on at ``brightness`` percent (0 .. 100), stopping a
+        running :meth:`device` mirror or animation. Declared here because the
+        firmware has it while the published ``pybricks`` stubs do not.
+        """
+
+
 class System(_common.System):
     """The PeakHub's system object: everything ``pybricks`` offers, plus the
     board identity.
@@ -72,20 +81,59 @@ class System(_common.System):
         "program_start_type"}`` in one call.
         """
 
+    def name(self) -> str:
+        """name() -> str
+
+        The hub name, as advertised over Bluetooth.
+        """
+
+    def reset_reason(self) -> int:
+        """reset_reason() -> int
+
+        Why the hub last reset: ``0`` power-on or unknown, ``1`` software
+        reset, ``2`` watchdog.
+        """
+
+    def low_power(self) -> None:
+        """low_power()
+
+        Ends the program and drops the hub into its wakeable low-power mode
+        (device supply off, motors coasting, panel dimmed) instead of powering
+        off; a short button press wakes it back to the idle menu. PeakHub only.
+        """
+
+
+class Battery(_common.Battery):
+    """The PeakHub's battery, with the two readings the published ``pybricks``
+    stubs lack."""
+
+    def type(self) -> str:
+        """type() -> str
+
+        The battery chemistry the hub was built for: ``"Li-ion"``,
+        ``"Alkaline"`` or ``"Unknown"``.
+        """
+
+    def temperature(self) -> int:
+        """temperature() -> int
+
+        The battery pack temperature, in milli-degrees Celsius.
+        """
+
 
 class PeakHub:
     """LEGO-compatible hub by Sciurus Robotics: 8 ports, 5x5 RGB matrix, IMU."""
 
     # Class attributes for documentation/typing only; the firmware creates
     # them as instance attributes in __init__.
-    battery = _common.Battery()
+    # No charger and no ble: the firmware's hub type exposes neither (the
+    # PeakHub's Bluetooth is a console/protocol transport, not a user API).
+    battery = Battery()
     buttons = _common.Keypad([_Button.LEFT, _Button.RIGHT, _Button.CENTER, _Button.BLUETOOTH])
-    charger = _common.Charger()
     display = LightMatrix(5, 5)
     imu = _common.IMU()
     speaker = _common.Speaker()
     system = System()
-    ble = _common.BLE()
 
     def __init__(
         self,

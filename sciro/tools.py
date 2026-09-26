@@ -4,7 +4,56 @@ helpers. EXPERIMENTAL: the API may still change between releases.
 
 from __future__ import annotations
 
-from typing import Awaitable, Callable, Iterable, Iterator, Optional, Sequence, Tuple
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Awaitable,
+    Callable,
+    Iterable,
+    Iterator,
+    Optional,
+    Sequence,
+    Tuple,
+)
+
+if TYPE_CHECKING:
+    from pybricks._common import MaybeAwaitableTuple
+else:
+    # Upstream defines this only for type checkers; runtime importers of the
+    # stubs (the docs build) need a value. Annotations are strings here
+    # (from __future__ import annotations), so a placeholder suffices.
+    MaybeAwaitableTuple = None
+
+
+def multitask(*coroutines: Awaitable[Any], race: bool = False) -> MaybeAwaitableTuple:
+    """multitask(coroutine1, coroutine2, ..., race=False) -> Tuple
+
+    ``pybricks.tools.multitask`` (the same function on the hub), typed to
+    accept any awaitable.
+
+    The upstream stub asks for ``Coroutine``, which every *maybe-awaitable*
+    hub method fails to satisfy for a type checker: ``motor.run_angle(...)``,
+    ``db.straight(...)`` or ``sensor.read()`` are declared as awaitables, not
+    as coroutines, because they return a plain value when called outside
+    ``run_task``. Importing ``multitask`` (and :func:`run_task`) from
+    ``sciro.tools`` instead of ``pybricks.tools`` removes those warnings::
+
+        from sciro.tools import multitask, run_task
+
+        async def main():
+            await multitask(db.straight(500), log.record(db.state), race=True)
+
+        run_task(main())
+    """
+
+
+def run_task(coroutine: Optional[Awaitable[Any]] = None) -> Optional[bool]:
+    """run_task(coroutine) -> bool | None
+
+    ``pybricks.tools.run_task`` (the same function on the hub), typed to
+    accept any awaitable; see :func:`multitask`. Without an argument it
+    returns whether the run loop is active.
+    """
 
 
 class RingBuffer:

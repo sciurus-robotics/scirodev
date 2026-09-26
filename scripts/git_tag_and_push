@@ -16,6 +16,10 @@ if [ -n "$(git status --porcelain)" ]; then
   echo "error: working tree is not clean; commit or stash first" >&2
   exit 1
 fi
+# The API reference must build from these stubs (warnings are errors) before
+# a version goes out; a broken docstring or import shows up here, not on the
+# website.
+scripts/build-docs >/dev/null
 if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
   echo "error: tag ${tag} already exists (bump the version in pyproject.toml)" >&2
   exit 1

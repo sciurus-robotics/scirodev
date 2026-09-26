@@ -4,10 +4,19 @@ EXPERIMENTAL: the API may still change between releases.
 
 from __future__ import annotations
 
-from typing import Optional, Tuple
+from typing import TYPE_CHECKING, Optional, Tuple, Union
 
-from pybricks.parameters import Number, Stop
-from pybricks._common import MaybeAwaitable
+from pybricks.parameters import Stop
+
+if TYPE_CHECKING:
+    from pybricks._common import MaybeAwaitable
+    from pybricks.parameters import Number
+else:
+    # Upstream defines these only for type checkers; runtime importers of the
+    # stubs (the docs build) need values. Annotations are strings here
+    # (from __future__ import annotations), so placeholders suffice.
+    Number = Union[int, float]
+    MaybeAwaitable = None
 
 from pybricks import _common
 from pybricks.robotics import DriveBase as _DriveBase

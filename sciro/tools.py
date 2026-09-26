@@ -65,7 +65,8 @@ class Logger:
     fixed buffer (not a ring) allocated by :meth:`start`.
 
     Controller columns: ``t_ms, traj_ms, position, speed, status, torque,
-    ref_position, ref_speed, est_position, est_speed, p, i, d`` (position in
+    ref_position, ref_speed, est_position, est_speed, p, i, d, position_c``
+    (``position_c`` = position in 0.01 units, PeakHub; position in
     the controller's units: mm or deg; torque in uNm; status bits: actuation
     0..1, stalled 2, on target 3, integration paused 4).
     Servo (Motor) columns: ``t_ms, time_ms, angle, speed, status, voltage_mv,

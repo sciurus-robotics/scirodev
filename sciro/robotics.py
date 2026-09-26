@@ -64,6 +64,31 @@ class DriveBase(_DriveBase):
         upstream meaning: continue at the drive speed.
         """
 
+    def heading_target(self, angle: Optional[Number] = None) -> Optional[float]:
+        """heading_target(angle) / heading_target() -> float
+
+        Steers a running :meth:`straight` (PeakHub): replaces the heading
+        setpoint without touching the distance trajectory (position, speed,
+        exit speed and end condition stay). Absolute heading in degrees,
+        float, same frame and nearest-whole-turn rule as ``straight(heading=)``.
+        The heading controller branches off its current reference on a new
+        trajectory, so small steps (the usual < 1 degree per 10 ms) are smooth
+        and large ones are limited by the ``turn_rate`` / ``turn_acceleration``
+        settings. Without an argument returns the current heading target.
+
+        Typical use, a line follower as a setpoint generator::
+
+            db.straight(dist, speed=v, exit_speed=e, heading=course, wait=False)
+            while not db.done():
+                data = await floor.all_sensor_data()
+                db.heading_target(course + K * data[0])
+                await wait(10)
+
+        Raises ``OSError`` when no ``straight()`` is running (``drive()``,
+        ``turn()``, ``curve()``, ``arc()`` and an idle drivebase are not
+        steerable).
+        """
+
 
 class PIDController:
     """Discrete PID controller: ``output = kp*e + ki*integral(e) + kd*de/dt``.

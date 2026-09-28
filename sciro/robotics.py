@@ -73,19 +73,74 @@ class DriveBase(_DriveBase):
         upstream meaning: continue at the drive speed.
         """
 
+    def turn(  # type: ignore[override]
+        self,
+        angle: Number,
+        then: Stop = Stop.HOLD,
+        wait: bool = True,
+        absolute: bool = False,
+        turn_rate: Optional[Number] = None,
+    ) -> MaybeAwaitable:
+        """turn(angle, then=Stop.HOLD, wait=True, absolute=False, turn_rate=None)
+
+        Turns in place, as in Pybricks, with one PeakHub extension:
+
+        ``turn_rate``: turn rate in deg/s for this move only; ``None`` uses the
+        ``turn_rate`` setting, which is left untouched either way.
+
+        ``absolute=True`` turns *to* the given heading rather than *by* it,
+        taking the nearest whole-turn equivalent, so the correction is always
+        within +/-180 degrees (the same rule as ``straight(heading=)``).
+        """
+
     def curve(
         self,
         radius: Number,
         angle: Number,
         then: Stop = Stop.HOLD,
         wait: bool = True,
+        speed: Optional[Number] = None,
+        exit_speed: Number = 0,
     ) -> MaybeAwaitable:
-        """curve(radius, angle, then=Stop.HOLD, wait=True)
+        """curve(radius, angle, then=Stop.HOLD, wait=True, speed=None, exit_speed=0)
 
         Drives an arc of ``angle`` degrees along a circle of ``radius`` mm.
-        The firmware still has this method, but the ``pybricks`` stubs dropped
-        it in favor of :meth:`arc`, so it is declared here to keep it usable
-        without a type error. Prefer ``arc()`` in new code.
+        Upstream dropped this method in favour of :meth:`arc`, but the firmware
+        still has it, so it is declared here to keep it usable without a type
+        error. ``arc()`` takes the same extensions and is preferred in new code.
+
+        ``speed``: drive speed in mm/s along the arc for this move only. The
+        matching turn rate is derived from it, so the linear speed is what
+        governs the duration; ``None`` uses the ``straight_speed`` and
+        ``turn_rate`` settings.
+
+        ``exit_speed``: speed in mm/s the robot has when it reaches the end of
+        the arc. The *turn rate is brought to zero* at that point, so the robot
+        leaves on the tangent and keeps driving straight at ``exit_speed``
+        until the next command. This makes a curve-to-straight handover smooth;
+        without it a continuing move keeps rotating at the arc's turn rate and
+        the next command has to cancel that rotation. The price is that the
+        last fraction of the path is slightly flatter than a true arc. Implies
+        ``then=Stop.NONE``; any other explicit ``then`` raises ``ValueError``.
+        """
+
+    def arc(  # type: ignore[override]
+        self,
+        radius: Number,
+        angle: Optional[Number] = None,
+        distance: Optional[Number] = None,
+        then: Stop = Stop.HOLD,
+        wait: bool = True,
+        speed: Optional[Number] = None,
+        exit_speed: Number = 0,
+    ) -> MaybeAwaitable:
+        """arc(radius, angle=None, distance=None, then=Stop.HOLD, wait=True, speed=None, exit_speed=0)
+
+        Drives an arc, as in Pybricks, with the same two PeakHub extensions as
+        :meth:`curve`: ``speed`` in mm/s for this move only (the turn rate is
+        derived from it), and ``exit_speed``, which ends the arc at that speed
+        with the turn rate at zero so the robot exits on the tangent and keeps
+        driving straight. ``exit_speed`` implies ``then=Stop.NONE``.
         """
 
     def heading_target(self, angle: Optional[Number] = None) -> Optional[float]:

@@ -1,7 +1,8 @@
 """sciro.hubs -- the PeakHub.
 
 On the hub this module re-exports ``pybricks.hubs`` unchanged; the stub adds what
-the upstream stubs lack: the ``PeakHub`` class and its ``display.device()``.
+the upstream stubs lack: the ``PeakHub`` class, its ``display.device()``, and the
+``ThisHub`` alias.
 """
 
 from __future__ import annotations
@@ -150,3 +151,32 @@ class PeakHub:
             broadcast_channel: Channel for broadcasting data (0 .. 255).
             observe_channels: Channels to observe.
         """
+
+
+#: The hub this program is running on.
+#:
+#: Every Pybricks firmware compiles in exactly one hub class and exports it
+#: under several names: the generic ``ThisHub``, the hub's own name, and any
+#: aliases. On PeakHub firmware ``ThisHub``, :class:`PeakHub`, ``PrimeHub`` and
+#: ``InventorHub`` are therefore all the *same* class object -- this is resolved
+#: when the firmware is built, not by detecting anything at run time.
+#:
+#: Use it for code that should run unchanged on whichever hub is in front of
+#: you, which is mostly bench and test scripts::
+#:
+#:     from sciro.hubs import ThisHub
+#:
+#:     hub = ThisHub()
+#:     print(hub.imu.heading(), hub.imu.tilt())
+#:
+#: Prefer :class:`PeakHub` when a program is specific to this hub anyway: it
+#: says so, and it reads better than a generic name.
+#:
+#: Note the difference between the REPL and a downloaded program. The REPL is
+#: started with everything auto-imported and with a ready-made ``hub`` instance
+#: already created, so there ``hub.imu.heading()`` just works. A downloaded
+#: program gets neither: it must import what it uses and construct the hub, as
+#: above, and ``print(hub)`` there raises ``NameError``. (In the firmware this
+#: is ``pb_package_pybricks_init(true)`` for the REPL versus ``false`` for
+#: everything else.)
+ThisHub = PeakHub

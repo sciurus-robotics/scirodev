@@ -122,6 +122,49 @@ class Battery(_common.Battery):
         """
 
 
+class UsbPd:
+    """**Experimental.** The hub's USB-PD input.
+
+    Reached as :attr:`PeakHub.usb_pd`. Lets a program read the measured input
+    voltage and ask the USB-PD sink to renegotiate to a different one.
+    """
+
+    def voltage(self, volts: Optional[int] = None) -> Optional[int]:
+        """voltage(volts=None) -> int
+
+        Without an argument, returns the **measured** USB-PD input voltage in
+        millivolts. The sense sits before the ideal diode, so it reads the
+        supply itself and is not masked by a connected battery. Returns 0 if
+        the ADC has not sampled yet (only in the first few ms after boot).
+
+        With an argument, asks the sink to renegotiate to that voltage.
+
+        Arguments:
+            volts (int): 5, 9, 12 or 15. Any other value raises ``ValueError``.
+
+        Returns:
+            The measured voltage in mV when called with no argument,
+            otherwise ``None``.
+
+        .. warning::
+
+            **Experimental, and it is a request rather than a command.**
+
+            Setting a voltage triggers a real USB-PD renegotiation. The supply
+            may interrupt VBUS while it transitions; a hub running only from
+            USB-PD can brown out and lose its power self-hold, and would then
+            need the power button. A supply that does not offer the requested
+            voltage simply refuses, and the hub stays where it was --
+            ``voltage()`` raises nothing in that case, so **read the voltage
+            back** to see what actually happened rather than assuming the call
+            took effect.
+
+            Higher PD gears (20 V, 28 V) are deliberately unreachable: the
+            hub's voltage sense saturates at 18.81 V, so the firmware could not
+            even measure what it had asked for.
+        """
+
+
 class PeakHub:
     """LEGO-compatible hub by Sciurus Robotics: 8 ports, 5x5 RGB matrix, IMU."""
 
@@ -135,6 +178,7 @@ class PeakHub:
     imu = _common.IMU()
     speaker = _common.Speaker()
     system = System()
+    usb_pd = UsbPd()
 
     def __init__(
         self,

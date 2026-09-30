@@ -150,18 +150,18 @@ class UsbPd:
 
             **Experimental, and it is a request rather than a command.**
 
-            Setting a voltage triggers a real USB-PD renegotiation. The supply
-            may interrupt VBUS while it transitions; a hub running only from
-            USB-PD can brown out and lose its power self-hold, and would then
-            need the power button. A supply that does not offer the requested
-            voltage simply refuses, and the hub stays where it was --
-            ``voltage()`` raises nothing in that case, so **read the voltage
-            back** to see what actually happened rather than assuming the call
-            took effect.
+            A supply that does not offer the requested voltage simply refuses.
+            Nothing is raised in that case and the hub stays where it was, so
+            **read the voltage back** to see what actually happened rather than
+            assuming the call took effect.
 
             Higher PD gears (20 V, 28 V) are deliberately unreachable: the
             hub's voltage sense saturates at 18.81 V, so the firmware could not
             even measure what it had asked for.
+
+        Renegotiating itself is well behaved in practice: measured working even
+        while driving motors on a small (2x18650-class) power bank, and on a
+        bench supply switching 9 V to 12 V and back with the hub up throughout.
         """
 
 

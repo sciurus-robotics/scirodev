@@ -7,7 +7,7 @@ the upstream stubs lack: the ``PeakHub`` class, its ``display.device()``, and th
 
 from __future__ import annotations
 
-from typing import Any, Optional, Protocol, Tuple
+from typing import Any, Dict, Optional, Protocol, Tuple, Union
 
 from pybricks import _common
 from pybricks.hubs import PrimeHub as PrimeHub  # noqa: F401  (re-export)
@@ -162,6 +162,25 @@ class UsbPd:
         Renegotiating itself is well behaved in practice: measured working even
         while driving motors on a small (2x18650-class) power bank, and on a
         bench supply switching 9 V to 12 V and back with the hub up throughout.
+
+        Some power banks that were already switched on when the cable went
+        in feed plain 5 V first and then cycle VBUS by themselves a few seconds
+        later to start PD; a hub running from USB alone restarts at 9 V then.
+        That is the bank's doing, not the request's. Switching such a bank off
+        and on before pressing PWR avoids it.
+        """
+
+    def status(self) -> Dict[str, Union[bool, int]]:
+        """status() -> Dict
+
+        What the USB-PD sink negotiated with the supply:
+        ``{"pd": bool, "bc": bool, "qc2": bool, "qc3": bool, "epr": bool,
+        "max_ma": int, "raw": int, "mv": int}``. ``pd`` is ``True`` under a PD
+        contract (the normal 9 V case). ``max_ma`` is the contract's current
+        limit (0 without PD), ``raw`` the sink's status register, ``mv`` the
+        measured input voltage.
+
+        Diagnostic: lets a program see whether a contract exists at all.
         """
 
 

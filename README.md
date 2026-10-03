@@ -23,6 +23,7 @@ from sciro.parameters import Port          # Port.A .. Port.H (PeakHub has 8 por
 from sciro.iodevices import PUMPDevice     # generic PUMP device access
 from sciro.pump import FloorPro        # PUMP devices (LP-FloorPro, ...)
 from sciro.hubs import PeakHub             # hub class incl. display.device()
+from sciro.canbus import CAN               # beta: raw classic-CAN frames on connector 1/2
 from sciro.tools import RingBuffer         # experimental: RAM recorder -> CSV file via the console
 from sciro.robotics import PIDController   # experimental: PID with optional logging
 

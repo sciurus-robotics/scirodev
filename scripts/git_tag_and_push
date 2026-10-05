@@ -9,7 +9,10 @@ set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 remote="${1:-origin}"
 
-version="$(python3 -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+# A working Python with the docs requirements (see scripts/env.sh).
+source scripts/env.sh
+
+version="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
 tag="v${version}"
 
 if [ -n "$(git status --porcelain)" ]; then

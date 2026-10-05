@@ -82,6 +82,25 @@ def build_parser() -> tuple[argparse.ArgumentParser, argparse._SubParsersAction]
     return parser, subparsers
 
 
+def pairing_hint(error: str) -> str | None:
+    """Plain words for the Bluetooth errors a PIN-protected hub can cause."""
+    e = error.lower()
+    if "peer removed pairing information" in e:
+        return (
+            "This computer was paired with the hub, but the hub no longer knows it\n"
+            "(its PIN was set or changed). Make the computer forget the hub in its\n"
+            "Bluetooth settings, then run the command again and enter the hub's PIN."
+        )
+    if "authentication" in e or "encryption is insufficient" in e or "pairing" in e:
+        return (
+            "The hub is protected with a PIN. Enter it in the dialog of your operating\n"
+            "system when it appears; if the command gave up meanwhile, run it again.\n"
+            "After 3 wrong PINs the hub refuses new computers until its Bluetooth\n"
+            "button is switched off and on."
+        )
+    return None
+
+
 def main() -> None:
     if sys.platform == "win32":
         # Same workaround as pybricksdev: bad side effects of pythoncom.
@@ -111,7 +130,14 @@ def main() -> None:
     if not args.tool:
         parser.error(f'Missing name of tool: {"|".join(subparsers.choices.keys())}')
 
-    result = asyncio.run(subparsers.choices[args.tool].tool.run(args))
+    try:
+        result = asyncio.run(subparsers.choices[args.tool].tool.run(args))
+    except Exception as e:
+        hint = pairing_hint(str(e))
+        if hint is None or args.debug:
+            raise
+        print(f"error: {e}\n\n{hint}", file=sys.stderr)
+        sys.exit(1)
     if isinstance(result, int) and result:
         sys.exit(result)
 

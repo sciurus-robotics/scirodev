@@ -70,6 +70,30 @@ pybricks.parameters.Port` — the stubs only add what the IDE is missing. The
 stub files here mirror the frozen modules; a release of this package matches
 the PeakHub firmware of the same date.
 
+## Hub names
+
+Every PeakHub advertises under its own name, `Peak-XXXX` out of the box (the
+first four characters of its board ID), so several hubs on one table can be
+told apart:
+
+```
+scirodev run ble --name Peak-BYN9 prog.py
+```
+
+Give a hub a name of your choice (1 to 16 printable ASCII characters); it is
+stored on the hub and survives power cycles and firmware updates:
+
+```
+scirodev rename usb MyRobot               # over USB: applied at once
+scirodev rename ble MyRobot -n Peak-BYN9  # over Bluetooth: confirm on the hub
+scirodev rename usb --default             # back to Peak-XXXX
+```
+
+Over Bluetooth the hub spells the new name on its display, then shows `?`.
+Press the centre button to accept; any other button, or 10 seconds without
+one, rejects. This keeps somebody else in radio range from renaming your hub.
+`hub.system.name()` returns the name.
+
 ## API reference (HTML)
 
 The stubs double as the source of the API reference, built with Sphinx the way

@@ -1,14 +1,4 @@
-"""`scirodev rename`: give a PeakHub a name of its own.
-
-The name is what the hub advertises over Bluetooth (so `scirodev run ble
---name <name>` finds exactly this hub), what `hub.system.name()` returns, and
-it is stored on the hub across power cycles and firmware updates.
-
-Over USB the hub takes the name at once. Over Bluetooth, where anybody in
-range could send the command, the hub spells the new name on its display,
-shows a `?` and applies it only when the centre button is pressed (any other
-button, or 10 s without one, rejects it).
-"""
+"""`scirodev rename`: give a PeakHub a name of its own (see DESCRIPTION)."""
 
 from __future__ import annotations
 
@@ -33,29 +23,51 @@ def check_name(name: str) -> str:
     return name
 
 
-def parse(argv: list[str]) -> argparse.Namespace:
-    p = argparse.ArgumentParser(
-        prog="scirodev rename",
-        description=__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    p.add_argument("conntype", choices=["ble", "usb"], help="how to reach the hub")
-    p.add_argument(
-        "new_name",
-        type=check_name,
-        nargs="?",
-        help=f"the new name: 1 to {NAME_MAX} printable ASCII characters",
-    )
-    p.add_argument("--default", action="store_true", help="go back to the default name (Peak-XXXX)")
-    p.add_argument("-n", "--name", help="current name of the hub to rename (ble; default: first hub found)")
-    args = p.parse_args(argv)
-    if args.default == (args.new_name is not None):
-        p.error("give either a new name or --default")
-    if args.default:
-        args.new_name = ""
-    elif args.new_name == "":
-        p.error("the name must not be empty (use --default for the default name)")
-    return args
+DESCRIPTION = """\
+Give a PeakHub a name of its own.
+
+The name is what the hub advertises over Bluetooth (so `scirodev run ble
+--name <name>` finds exactly this hub) and what hub.system.name() returns. It
+is stored on the hub across power cycles and firmware updates.
+
+Over USB the hub takes the name at once. Over Bluetooth, where anybody in
+range could send the command, the hub spells the new name on its display,
+shows `?` and applies it only when the centre button is pressed (any other
+button, or 10 s without one, rejects it). The hub must be idle: no program
+running, not in power-save.
+"""
+
+
+class Rename:
+    """The `rename` tool (same shape as pybricksdev's Tool classes)."""
+
+    def add_parser(self, subparsers: argparse._SubParsersAction) -> None:
+        p = subparsers.add_parser(
+            "rename",
+            help="set the name a PeakHub advertises under",
+            description=DESCRIPTION,
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+        )
+        p.tool = self
+        self.parser = p
+        p.add_argument("conntype", choices=["ble", "usb"], help="how to reach the hub")
+        p.add_argument(
+            "new_name",
+            type=check_name,
+            nargs="?",
+            help=f"the new name: 1 to {NAME_MAX} printable ASCII characters",
+        )
+        p.add_argument("--default", action="store_true", help="go back to the default name (Peak-XXXX)")
+        p.add_argument("-n", "--name", help="current name of the hub to rename (ble; default: first hub found)")
+
+    async def run(self, args: argparse.Namespace) -> int:
+        if args.default == (args.new_name is not None):
+            self.parser.error("give either a new name or --default")
+        if args.default:
+            args.new_name = ""
+        elif args.new_name == "":
+            self.parser.error("the name must not be empty (use --default for the default name)")
+        return await rename(args)
 
 
 async def rename(args: argparse.Namespace) -> int:
@@ -98,8 +110,3 @@ async def rename(args: argparse.Namespace) -> int:
     finally:
         await hub.disconnect()
     return 0
-
-
-def main(argv: list[str]) -> None:
-    args = parse(argv)
-    sys.exit(asyncio.run(rename(args)))

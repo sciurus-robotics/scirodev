@@ -1,8 +1,13 @@
 # scirodev
 
-Host-side companion to the PeakHub firmware: **typed API stubs** for the `sciro`
-namespace that PeakHub programs import, plus the hub tooling (it depends on
-`pybricksdev`, so `scirodev run ble prog.py` works exactly like `pybricksdev`).
+Host-side companion to Sciurus Robotics hubs (PeakHub so far): **typed API
+stubs** for the `sciro` namespace that PeakHub programs import, plus the
+`scirodev` command line tool.
+
+The tool is built on `pybricksdev`. It offers pybricksdev's own tools
+unchanged (`scirodev run ble prog.py` works exactly like `pybricksdev run`),
+and adds tools that only exist for sciro hubs, such as `scirodev rename`.
+`scirodev -h` lists both and marks which is which.
 
 ```
 pip install scirodev                                    # from PyPI

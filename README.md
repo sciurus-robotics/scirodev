@@ -95,7 +95,7 @@ scirodev rename usb --default             # back to Peak-XXXX
 ```
 
 Over Bluetooth the hub spells the new name on its display, then shows `?`.
-Press the centre button to accept; any other button, or 10 seconds without
+Press the center button to accept; any other button, or 10 seconds without
 one, rejects. This keeps somebody else in radio range from renaming your hub.
 `hub.system.name()` returns the name.
 

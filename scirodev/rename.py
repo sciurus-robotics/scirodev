@@ -32,7 +32,7 @@ is stored on the hub across power cycles and firmware updates.
 
 Over USB the hub takes the name at once. Over Bluetooth, where anybody in
 range could send the command, the hub spells the new name on its display,
-shows `?` and applies it only when the centre button is pressed (any other
+shows `?` and applies it only when the center button is pressed (any other
 button, or 10 s without one, rejects it). The hub must be idle: no program
 running, not in power-save.
 """
@@ -101,7 +101,7 @@ async def rename(args: argparse.Namespace) -> int:
         )
         if args.conntype == "ble":
             print(f"The hub now shows the new name ({shown}) and then '?'.")
-            print("Press the centre button on the hub to accept. Any other button, or 10 s, rejects.")
+            print("Press the center button on the hub to accept. Any other button, or 10 s, rejects.")
             # Stay connected while the user decides, so nobody else can slip in.
             await asyncio.sleep(len(args.new_name) * 0.6 + 10.5)
             print("Done. If accepted, the hub advertises under the new name from the next connection on.")

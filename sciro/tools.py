@@ -91,7 +91,7 @@ class RingBuffer:
         """Append one row; values in field order."""
 
     def record(self, source: Callable[[], Sequence[float | int]], period: int = 10) -> Awaitable[None]:
-        """Coroutine: append ``source()`` every ``period`` ms until cancelled.
+        """Coroutine: append ``source()`` every ``period`` ms until canceled.
 
         Run it next to the movement, e.g.
         ``await multitask(drive(), log.record(db.state), race=True)``.

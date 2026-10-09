@@ -105,7 +105,7 @@ class DriveBase(_DriveBase):
         """curve(radius, angle, then=Stop.HOLD, wait=True, speed=None, exit_speed=0)
 
         Drives an arc of ``angle`` degrees along a circle of ``radius`` mm.
-        Upstream dropped this method in favour of :meth:`arc`, but the firmware
+        Upstream dropped this method in favor of :meth:`arc`, but the firmware
         still has it, so it is declared here to keep it usable without a type
         error. ``arc()`` takes the same extensions and is preferred in new code.
 

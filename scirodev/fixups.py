@@ -143,6 +143,50 @@ def install_stop_before_run() -> None:
     PybricksHub.run = run
 
 
+LIBUSB_HINT = """\
+USB needs the native libusb library, which pip does not install:
+  macOS:            brew install libusb
+  Debian / Ubuntu:  sudo apt install libusb-1.0-0
+On an Apple-silicon Mac that has it installed, an old Intel-only
+/usr/local/lib/libusb-1.0.dylib being found first causes the same error;
+remove it."""
+
+
+def check_usb_backend() -> str | None:
+    """Returns a message if pyusb has no libusb to talk to, else None."""
+    try:
+        import usb.backend.libusb1 as libusb1
+    except ImportError:
+        return "pyusb is not installed (pip install pyusb)."
+    if libusb1.get_backend() is None:
+        return "libusb was not found.\n" + LIBUSB_HINT
+    return None
+
+
+def install_usb_backend_check() -> None:
+    """Fail with a plain message instead of pyusb's NoBackendError when a USB
+    connection is attempted without libusb."""
+    try:
+        import pybricksdev.cli as pbcli
+    except ImportError:
+        return
+    run_cls = getattr(pbcli, "Run", None)
+    original = getattr(run_cls, "run", None) if run_cls else None
+    if original is None or _patched(original):
+        return
+
+    async def run(self, args):
+        if getattr(args, "conntype", None) == "usb":
+            problem = check_usb_backend()
+            if problem:
+                raise SystemExit("error: " + problem)
+        return await original(self, args)
+
+    run._scirodev_patched = True  # type: ignore[attr-defined]
+    run_cls.run = run
+
+
 def install() -> None:
+    install_usb_backend_check()
     install_usb_connect()
     install_stop_before_run()

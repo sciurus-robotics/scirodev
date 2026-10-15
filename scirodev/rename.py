@@ -80,6 +80,12 @@ async def rename(args: argparse.Namespace) -> int:
         print(f"Searching for {args.name or 'any hub with Pybricks service'}...")
         hub = PybricksHubBLE(await find_device(args.name))
     else:
+        from .fixups import check_usb_backend
+
+        problem = check_usb_backend()
+        if problem:
+            raise SystemExit("error: " + problem)
+
         from usb.core import find as find_usb
 
         from pybricksdev.connections.pybricks import PybricksHubUSB

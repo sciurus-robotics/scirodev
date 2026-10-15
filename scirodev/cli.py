@@ -47,7 +47,13 @@ def _pybricksdev_version() -> str:
 def build_parser() -> tuple[argparse.ArgumentParser, argparse._SubParsersAction]:
     import pybricksdev.cli as pbcli
 
+    from . import fixups
     from .rename import Rename
+
+    # Robustness fix-ups for pybricksdev (see scirodev/fixups.py): a USB
+    # connect that survives the hub's re-enumeration, and a stop before a
+    # download. Applied here so every tool gets them (run, rename, ...).
+    fixups.install()
 
     parser = argparse.ArgumentParser(
         prog="scirodev",

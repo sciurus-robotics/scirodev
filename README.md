@@ -99,6 +99,18 @@ Press the center button to accept; any other button, or 10 seconds without
 one, rejects. This keeps somebody else in radio range from renaming your hub.
 `hub.system.name()` returns the name.
 
+## USB on macOS
+
+`scirodev run usb` needs libusb (`brew install libusb`). If it fails with
+`No backend available`, an old Intel-only `libusb-1.0.dylib` in `/usr/local/lib`
+is being found first; remove it.
+
+`scirodev` also works around two pybricksdev behaviours seen on macOS: a
+connect that fails with `No such device` about one time in three after the USB
+reset (the hub re-enumerates; `scirodev` looks it up again), and a `Write
+failed: 129` when a program is still running on the hub from an earlier,
+interrupted run (`scirodev` stops it before downloading).
+
 ## API reference (HTML)
 
 The stubs double as the source of the API reference, built with Sphinx the way

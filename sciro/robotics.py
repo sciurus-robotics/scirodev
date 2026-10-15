@@ -37,7 +37,17 @@ class DriveBase(_DriveBase):
     PeakHub extensions of :meth:`straight`."""
 
     heading_control: Control  # type: ignore[assignment]
+    """The robot turn angle and turn rate are controlled by a PID controller;
+    this attribute changes its settings and, on the PeakHub, exposes its
+    :class:`Logger` as ``log``. Same methods as a motor's ``control``, but the
+    settings apply to every degree of rotation of the whole drive base (viewed
+    from the top) instead of degrees turned by one motor."""
     distance_control: Control  # type: ignore[assignment]
+    """The traveled distance and drive speed are controlled by a PID
+    controller; this attribute changes its settings and, on the PeakHub,
+    exposes its :class:`Logger` as ``log``. Same methods as a motor's
+    ``control``, but the settings apply to every millimeter driven by the drive
+    base instead of degrees turned by one motor."""
 
     def straight(  # type: ignore[override]
         self,

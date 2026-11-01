@@ -12,6 +12,8 @@ if TYPE_CHECKING:
     from typing import Awaitable
 
     _Line = Tuple[float, float, float, float, int, bool]
+    _PD = Tuple[float, float, float, bool]
+    _PDGains = Tuple[float, float, int, int]
     _Ints = Tuple[int, ...]
     _IRCalib = Tuple[Tuple[int, ...], Tuple[int, ...], int, int]
     _RGBC = Tuple[int, int, int, int, int]
@@ -24,6 +26,8 @@ if TYPE_CHECKING:
     _Frame = Tuple[int, bytes, bool]
 
     class MaybeAwaitableLine(_Line, Awaitable[_Line]): ...
+
+    class MaybeAwaitablePD(_PD, Awaitable[_PD]): ...
 
     class MaybeAwaitableInts(_Ints, Awaitable[_Ints]): ...
 

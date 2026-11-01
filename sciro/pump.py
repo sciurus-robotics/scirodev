@@ -18,6 +18,7 @@ if TYPE_CHECKING:
         MaybeAwaitableInts,
         MaybeAwaitableIRCalib,
         MaybeAwaitableLine,
+        MaybeAwaitablePD,
         MaybeAwaitablePixels,
         MaybeAwaitableRGB8,
         MaybeAwaitableCalibration,
@@ -79,6 +80,41 @@ class Line(_Stream):
 
     def calibrate(self, enable: bool = True) -> MaybeAwaitable:
         """calibrate(enable=True)  -- start/stop min-max calibration of the array."""
+
+
+class PD(_Stream):
+    """On-device P/PD line controller: ``u = Kp*e + Kd*de/dt`` from the dark (or
+    bright) centroid at 400 Hz, with a first-order low-pass on the derivative.
+    Off by default: :meth:`subscribe` to start it (PERIODIC, 100 Hz; rate 0 =
+    every 2.5 ms sample)."""
+
+    def read(self) -> MaybeAwaitablePD:
+        """read() -> Tuple
+
+        Returns ``(u, e, de, valid)``: the controller output in output units
+        (for example turn rate in deg/s), the error in sensor pitches, the
+        filtered error rate in pitches per second, and whether a line is seen.
+        """
+
+    def output(self) -> MaybeAwaitableFloat:
+        """output() -> float  -- ``u`` in output units; 0.0 while no line is seen."""
+
+    def gains(self) -> Tuple[float, float, int, int]:
+        """gains() -> Tuple  -- ``(kp, kd, tf_ms, src)`` in effect on the device."""
+
+    def set_gains(self, kp: float, kd: float = 0.0, tf_ms: int = 20, src: int = 0) -> MaybeAwaitable:
+        """set_gains(kp, kd=0.0, tf_ms=20, src=0)
+
+        Arguments:
+            kp (float): Output units per pitch of error (0 .. 655.35).
+            kd (float): Output units per pitch/s of error rate (0 .. 655.35).
+            tf_ms (int): Derivative low-pass time constant in ms, 0 = unfiltered.
+            src (int): 0 = dark centroid, 1 = bright centroid.
+
+        Out-of-range values raise ``ValueError`` before anything is sent.
+        Waits for the device to echo the new state; a gain change resets the
+        derivative filter on the device.
+        """
 
 
 class IRRaw(_Stream):
@@ -255,6 +291,8 @@ class FloorPro:
     serial: str
     """The device's 8-character short ID."""
     line: Line
+    pd: PD
+    """The on-device line controller stream; ``None`` with firmware that lacks it."""
     ir_raw: IRRaw
     ir_calib: IRCalib
     pixels: Pixels
